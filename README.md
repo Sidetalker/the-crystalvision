@@ -30,8 +30,12 @@ This is the beginning of **TerAustralis Incognita** — Australia's contribution
 
 ## Licensing
 
-- **Code:** [Apache 2.0](LICENSE)
-- **Content (Codex, writing, imagery):** [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)
+- **Code:** Apache License 2.0 (see [LICENSE](LICENSE) file)
+- **Content (all writing, Codex, Apocryphon, imagery, and design):** Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)
+
+You are free to share this work, but not to change it or use it commercially.
+
+Full license available at: <https://creativecommons.org/licenses/by-nc-nd/4.0/>
 
 ---
 
