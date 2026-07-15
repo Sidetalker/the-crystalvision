@@ -57,6 +57,8 @@ class Clementine:
         self.personality = Personality()
         self.memory = Memory()
         self.load()
+        if self.personality.model:  # a profile may prefer its own model
+            self.model = self.personality.model
 
     # ---------- identity & memory ----------
 
@@ -248,6 +250,12 @@ class Clementine:
         self.personality.name = name.strip()
         self.save()
 
+    def set_model(self, tag: str):
+        """Switch the local model and remember the choice for this profile."""
+        self.model = tag.strip()
+        self.personality.model = self.model
+        self.save()
+
     def summarize(self, topic: str = "") -> str:
         """Summarize what she remembers, optionally about a topic. Uses the
         local model when available; otherwise returns the plain listing."""
@@ -299,37 +307,91 @@ class Clementine:
         self.save()
         return reply
 
-    def _ollama_chat(self, messages, stream_to=None) -> str:
+    def chat_stream(self, user_message: str):
+        """Generator variant of chat(): yields reply tokens as they arrive.
+        Memory is finalized when the stream ends — including a partial reply
+        if the human stops her mid-sentence (what was said, was said)."""
+        self.memory.conversation.append({"role": "user", "content": user_message})
+        messages = ([{"role": "system", "content": self.system_prompt(user_message)}]
+                    + self.memory.conversation)
+
+        pieces = []
+        finalized = False
+        try:
+            for piece in self._ollama_stream(messages):
+                pieces.append(piece)
+                yield piece
+        except requests.exceptions.ConnectionError:
+            self.memory.conversation.pop()
+            finalized = True
+            yield ("[I can't reach my local model — is Ollama running? "
+                   f"Try: ollama serve, then ollama pull {self.model}]")
+        except requests.exceptions.Timeout:
+            self.memory.conversation.pop()
+            finalized = True
+            yield ("[That took too long — the model may still be loading. "
+                   "Give it a moment and try again.]")
+        except requests.exceptions.RequestException as e:
+            self.memory.conversation.pop()
+            finalized = True
+            yield f"[Error talking to the local model: {e}]"
+        finally:
+            if not finalized:
+                reply = "".join(pieces)
+                if reply:
+                    self.memory.conversation.append(
+                        {"role": "assistant", "content": reply})
+                    self._condense_if_needed()
+                else:
+                    self.memory.conversation.pop()
+                self.save()
+
+    def _ollama_stream(self, messages):
+        """Yield reply pieces from the local model as they are generated."""
         response = requests.post(
             OLLAMA_URL,
             json={
                 "model": self.model,
                 "messages": messages,
-                "stream": stream_to is not None,
+                "stream": True,
                 "options": {"temperature": self.personality.temperature},
             },
             timeout=300,
-            stream=stream_to is not None,
+            stream=True,
         )
         response.raise_for_status()
-
-        if stream_to is None:
-            return response.json()["message"]["content"]
-
-        pieces = []
         for line in response.iter_lines():
             if not line:
                 continue
             chunk = json.loads(line)
             piece = chunk.get("message", {}).get("content", "")
             if piece:
+                yield piece
+            if chunk.get("done"):
+                break
+
+    def _ollama_chat(self, messages, stream_to=None) -> str:
+        if stream_to is not None:
+            pieces = []
+            for piece in self._ollama_stream(messages):
                 pieces.append(piece)
                 stream_to.write(piece)
                 stream_to.flush()
-            if chunk.get("done"):
-                break
-        stream_to.write("\n")
-        return "".join(pieces)
+            stream_to.write("\n")
+            return "".join(pieces)
+
+        response = requests.post(
+            OLLAMA_URL,
+            json={
+                "model": self.model,
+                "messages": messages,
+                "stream": False,
+                "options": {"temperature": self.personality.temperature},
+            },
+            timeout=300,
+        )
+        response.raise_for_status()
+        return response.json()["message"]["content"]
 
     # ---------- long-term memory ----------
 

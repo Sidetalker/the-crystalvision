@@ -17,6 +17,7 @@ class Personality:
     style_notes: str = ""       # freeform extra guidance, e.g. "more poetic"
     avatar: str = ""            # an emoji for this profile, e.g. "🌟"
     description: str = ""       # a short line about this profile
+    model: str = ""             # this profile's preferred model ("" = default)
 
 
 @dataclass

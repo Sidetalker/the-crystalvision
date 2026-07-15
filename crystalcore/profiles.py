@@ -32,13 +32,15 @@ def profile_meta(name: str) -> dict:
     """Read a profile's avatar/description/companion-name from its own
     config.json — every profile is self-contained, no central registry."""
     config = Path(profile_dir(name)) / "config.json"
-    meta = {"profile": name, "avatar": "", "description": "", "name": ""}
+    meta = {"profile": name, "avatar": "", "description": "",
+            "name": "", "model": ""}
     if config.exists():
         try:
             data = json.loads(config.read_text())
             meta["avatar"] = data.get("avatar", "")
             meta["description"] = data.get("description", "")
             meta["name"] = data.get("name", "")
+            meta["model"] = data.get("model", "")
         except (json.JSONDecodeError, OSError):
             pass
     return meta

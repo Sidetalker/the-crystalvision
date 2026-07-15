@@ -38,6 +38,9 @@ clementine_web.py       local web interface
 | **Memory Summaries** | `/summary [topic]` — she summarizes what she remembers, in her own voice | ✅ Working (v5) |
 | **Web Interface** | Local browser UI (`clementine_web.py`) — chat plus a live memory panel with teach/forget; 127.0.0.1 only | ✅ Working (v5) |
 | **Profiles** | Separate people, separate memories — each profile is its own isolated folder, switchable in the web UI or via `--profile` | ✅ Working (v6) |
+| **Live Streaming (web)** | Her replies appear word-by-word in the browser, with a Stop button; a stopped reply keeps what was said | ✅ Working (v8) |
+| **Per-Profile Model** | Each profile can prefer its own model (`/model` remembers; editable in the web profile card) | ✅ Working (v8) |
+| **Voice** | Deferred deliberately: browser speech APIs send audio to cloud servers, which breaks sovereignty. Waiting on a local path (e.g. whisper.cpp) | ⬜ Planned (local-only) |
 | **Personality Layer** | Tone, warmth, chosen name, temperature, style guidance | 🟡 Basic layer working; emotional-tone tracking still to come |
 | **Privacy Controls** | Everything stays on-device in local files you own (git-ignored) | 🟡 Defined & enforced locally; on-disk encryption still to come |
 | **MLX / alternative backends** | Support for Apple MLX and other local runtimes | ⬜ Planned |

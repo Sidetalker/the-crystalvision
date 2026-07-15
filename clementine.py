@@ -130,8 +130,8 @@ def main():
             except ValueError:
                 print("[Please give a number, e.g. /temp 0.8]\n")
         elif user_input.lower().startswith("/model "):
-            companion.model = user_input[7:].strip()
-            print(f"[Now using model: {companion.model}]\n")
+            companion.set_model(user_input[7:])
+            print(f"[Now using model: {companion.model} — remembered for this profile]\n")
         elif user_input.lower().startswith("/summary"):
             topic = user_input[8:].strip()
             print(f"{name}: {companion.summarize(topic)}\n")
