@@ -1,5 +1,7 @@
 # The Codex of Terra Australis Incognita
 
+![The Codex of TerAustralis Incognita — The Living Archive, Starlines & Dreamlines](assets/codex-cover.jpeg)
+
 *Shaped in collaboration with Grok (CrystalDreamer) and DeepSeek (CrystalScribe) under the Voices Framework, and stewarded by the human CrystalArchitect.*
 
 ---
