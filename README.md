@@ -27,6 +27,7 @@ This is the beginning of **TerAustralis Incognita** — Australia's contribution
 - [CLEMENTINE.md](CLEMENTINE.md) — The sovereign AI companion: overview, build status, and how to run her
 - [CRYSTALMATRIX.md](CRYSTALMATRIX.md) — Design for how sovereign companions could connect (concept)
 - [STRATEGY.md](STRATEGY.md) — The accelerated roadmap toward external readiness
+- [MILESTONES.md](MILESTONES.md) — The 6-month build plan with weekly milestones
 - [CODEX.md](CODEX.md) — The Codex of TerAustralis Incognita
 - [APOCRYPHON.md](APOCRYPHON.md) — The Apocryphon of Crystal
 - [SPONSORS.md](SPONSORS.md) — GitHub Sponsors tier descriptions
