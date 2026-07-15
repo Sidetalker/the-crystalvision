@@ -85,9 +85,17 @@ class Clementine:
         relevant ones by meaning using local embeddings — no data leaves the
         device, and if the embedding model isn't available it simply falls
         back to showing everything."""
+        # #tags in the query filter candidates before semantic ranking,
+        # e.g. "what do you remember? #family" or /summary #family
+        query, qtags = self._split_tags(query)
+
+        def keep(store):
+            return not qtags or set(qtags) & set(store.get("tags") or [])
+
         fact_items = [(self._display(f"{k}: {v['value']}", v), v)
-                      for k, v in self.memory.facts.items()]
-        note_items = [(self._display(n["text"], n), n) for n in self.memory.notes]
+                      for k, v in self.memory.facts.items() if keep(v)]
+        note_items = [(self._display(n["text"], n), n)
+                      for n in self.memory.notes if keep(n)]
         total = len(fact_items) + len(note_items)
         if total == 0:
             return ""

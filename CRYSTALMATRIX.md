@@ -241,6 +241,31 @@ This roadmap is ambitious but grounded: it prioritises building strong foundatio
 
 ---
 
+## Memory Sharing — Early Design Sketch
+
+> Design only — nothing here is implemented. This sketches how the Consent & Permission Layer could govern memory sharing between companions (Phase 4), building on the tag/importance metadata the memory system already carries today.
+
+**Core principles:** memories are private by default; sharing is always opt-in and granular; the human reviews and approves every share.
+
+**Sharing modes** (most private first):
+
+| Mode | Selection Rule | Privacy Level | Use Case |
+|------|----------------|---------------|----------|
+| Specific memories | Exact hand-picked memories | Very High | Share one important memory |
+| By category | Approved tags + semantic relevance | High | Share all "family" memories |
+| High importance only | Core memories only, above a threshold | High | Share only core identity facts |
+| Reflections only | Insights, not raw events | High | Share understanding without history |
+| Anonymized | Summary/patterns only, no raw content | Medium | Privacy-preserving collaboration |
+
+**Consent flow:**
+
+1. Companion A's human initiates a share toward Companion B, with filters (tags, types, importance floor).
+2. A's companion runs a local search under those filters and presents the **candidate list to its own human**.
+3. The human reviews and approves or rejects each memory (or whole categories). Nothing moves without this step.
+4. Only approved memories travel — end-to-end encrypted over the Matrix — and the share is recorded so it can be audited or revoked.
+
+---
+
 ## Where This Could Go Deeper
 
 Future revisions of this design may expand:

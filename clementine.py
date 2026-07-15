@@ -25,7 +25,7 @@ HELP = """Commands:
   /remember <text>  ask her to permanently remember something (add #tags if you like)
   /fact <key> <value>  teach her a structured fact, e.g. /fact birthday June 3
                     (teach the same key again to correct it)
-  /notes            show everything she remembers (facts by key, notes numbered)
+  /notes [#tag]     show what she remembers (optionally only one #tag)
   /forget <handle>  forget a fact by key or a note by number, e.g. /forget n2
   /editnote <n> <text>  rewrite a note, e.g. /editnote n1 she prefers dawn walks
   /summary [topic]  ask her to summarize what she remembers (optionally on a topic)
@@ -96,12 +96,19 @@ def main():
                 print(f"[Fact remembered: {parts[0]} = {parts[1]}]\n")
             else:
                 print("[Usage: /fact <key> <value>, e.g. /fact birthday June 3]\n")
-        elif user_input.lower() == "/notes":
+        elif user_input.lower().startswith("/notes"):
+            want = user_input[6:].strip().lstrip("#").lower()
+            def _shown(store):
+                return not want or want in (store.get("tags") or [])
             for key, fact in companion.memory.facts.items():
+                if not _shown(fact):
+                    continue
                 tags = " ".join("#" + t for t in fact.get("tags") or [])
                 print(f"  - {key}: {fact['value']}"
                       f"{'  [' + tags + ']' if tags else ''}  ({fact['updated']})")
             for i, note in enumerate(companion.memory.notes, 1):
+                if not _shown(note):
+                    continue
                 tags = " ".join("#" + t for t in note.get("tags") or [])
                 print(f"  n{i} - {note['text']}"
                       f"{'  [' + tags + ']' if tags else ''}  ({note['when']})")
