@@ -72,7 +72,7 @@
 
 | Week | Focus | Key Milestones | Status |
 |------|-------|----------------|--------|
-| 17 | Memory Reflection | Clementine reflects on past conversations · Simple insights from memory | ⬜ |
+| 17 | Memory Reflection | Clementine reflects on past conversations · Simple insights from memory | ✅ (early — v10) |
 | 18 | Memory Organization | Basic categorization/tagging · Retrieval of thematically related memories | ⬜ |
 | 19 | Multi-Instance Thinking | Run two separate Clementine instances · Document what communication would need · Light research into encrypted messaging | ⬜ |
 | 20 | Code Quality | Refactor for modularity · Improve documentation and comments · Prepare structure for future P2P integration | ✅ (early — `crystalcore/` package) |

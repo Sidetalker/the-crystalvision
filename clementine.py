@@ -29,6 +29,9 @@ HELP = """Commands:
   /forget <handle>  forget a fact by key or a note by number, e.g. /forget n2
   /editnote <n> <text>  rewrite a note, e.g. /editnote n1 she prefers dawn walks
   /summary [topic]  ask her to summarize what she remembers (optionally on a topic)
+  /reflect          invite her to reflect and form gentle insights about you
+                    (she also reflects on her own after long conversations;
+                     insights appear in /notes as r1, r2... — /forget rN removes one)
   /style <text>     tune her voice, e.g. /style more poetic, fewer questions
   /temp <0.0-1.5>   set temperature (playfulness)
   /model <tag>      switch the local model, e.g. /model llama3.2:3b
@@ -112,6 +115,10 @@ def main():
                 tags = " ".join("#" + t for t in note.get("tags") or [])
                 print(f"  n{i} - {note['text']}"
                       f"{'  [' + tags + ']' if tags else ''}  ({note['when']})")
+            if companion.memory.reflections and not want:
+                print("  her own reflections (hold lightly; /forget rN removes one):")
+                for i, r in enumerate(companion.memory.reflections, 1):
+                    print(f"  r{i} - {r['text']}  ({r['when']})")
             print()
         elif user_input.lower().startswith("/forget "):
             forgotten = companion.forget(user_input[8:])
@@ -142,6 +149,8 @@ def main():
         elif user_input.lower().startswith("/summary"):
             topic = user_input[8:].strip()
             print(f"{name}: {companion.summarize(topic)}\n")
+        elif user_input.lower() == "/reflect":
+            print(f"{name} reflects…\n{companion.reflect()}\n")
         else:
             print(f"{name}: ", end="", flush=True)
             companion.chat(user_input, stream_to=sys.stdout)

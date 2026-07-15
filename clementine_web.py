@@ -81,7 +81,8 @@ PAGE = """<!doctype html>
     </form>
   </div>
   <aside>
-    <h2>Her memory</h2>
+    <h2>Her memory <button class="small" id="reflectbtn" type="button"
+        title="Invite her to form gentle insights about you">reflect</button></h2>
     <div id="mems"></div>
     <form id="teach">
       <input id="teachtext" placeholder="Teach her something… (#tags ok)">
@@ -114,7 +115,9 @@ function bubble(who, text){
 async function refreshMems(){
   const r = await fetch('/api/memories'); const data = await r.json();
   const box = document.getElementById('mems'); box.innerHTML = '';
-  for (const m of [...data.facts, ...data.notes]){
+  const all = [...data.facts, ...data.notes,
+               ...(data.reflections || []).map(r => ({...r, text: '✨ ' + r.text}))];
+  for (const m of all){
     const row = document.createElement('div'); row.className = 'mem';
     const left = document.createElement('div');
     left.textContent = (m.handle.startsWith('n') && /^n\\d+$/.test(m.handle)
@@ -221,6 +224,13 @@ document.getElementById('pmeta').onsubmit = async (e) => {
                           model: document.getElementById('pmodel').value.trim()})});
   refreshProfiles();
 };
+document.getElementById('reflectbtn').onclick = async () => {
+  const b = bubble('her', 'reflecting…');
+  const r = await fetch('/api/reflect', {method:'POST'});
+  const data = await r.json();
+  b.textContent = data.insights;
+  refreshMems();
+};
 document.getElementById('delprofile').onclick = async () => {
   const name = prompt('Delete which profile? (cannot be the active one — this erases its memory forever)');
   if (!name) return;
@@ -278,7 +288,14 @@ def create_app(companion: Clementine) -> Flask:
         notes = [{"handle": f"n{i}", "text": n["text"],
                   "tags": n.get("tags") or []}
                  for i, n in enumerate(c.memory.notes, 1)]
-        return jsonify({"facts": facts, "notes": notes})
+        reflections = [{"handle": f"r{i}", "text": r["text"], "tags": []}
+                       for i, r in enumerate(c.memory.reflections, 1)]
+        return jsonify({"facts": facts, "notes": notes,
+                        "reflections": reflections})
+
+    @app.post("/api/reflect")
+    def reflect():
+        return jsonify({"insights": holder["c"].reflect()})
 
     @app.post("/api/teach")
     def teach():

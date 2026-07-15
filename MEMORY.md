@@ -23,7 +23,7 @@ The goal is **presence and continuity** — so the user feels like they are talk
 | **Working Memory** | Short-term | Recent conversation (last 20–40 messages) | Current session | Coherence in the moment | Always included | ✅ Built |
 | **Episodic Memory** | Medium-term | Specific events, conversations, moments | Weeks to months | Remember "what happened" | Semantic + recency | 🟡 Partial |
 | **Semantic Memory** | Long-term | Facts, preferences, values, identity | Long-term | Know "who you are" | Semantic search | ✅ Built |
-| **Reflective Memory** | Meta / summarized | Insights, patterns, emotional tone over time | Long-term | Develop deeper understanding | On-demand / reflection | ⬜ Design |
+| **Reflective Memory** | Meta / summarized | Insights, patterns, emotional tone over time | Long-term | Develop deeper understanding | On-demand / reflection | ✅ Built (v10) |
 
 ### 1. Working Memory (short-term) — ✅ built
 
@@ -63,6 +63,8 @@ Stores insights and patterns Clementine has noticed over time.
 
 - **Purpose:** deeper understanding and emotional intelligence over time
 - Generated through periodic reflection (e.g. weekly, or after significant conversations)
+
+**Today (v10):** she reflects on invitation (`/reflect`, or the reflect button in the web UI) and on her own after long stretches of conversation are condensed. Insights are always framed as tentative ("hold them lightly"), always visible (`/notes` shows them as r1, r2…), and always deletable (`/forget rN`). She can be corrected, and she is instructed to let go gracefully.
 
 ---
 
@@ -122,7 +124,6 @@ Think of vector embeddings as GPS coordinates for meaning: a sentence becomes a 
 
 ### Honest current limitations
 
-- **No automatic reflection yet** — she doesn't form her own insights about you (the Reflective layer above is still design, pending a decision on how deep it should go)
 - **Embeddings are static** — created once per memory, refreshed only on edit
 - **No emotional tagging** — tags are manual; emotional-tone detection is future work
 - **No memory sharing between profiles** — full isolation today; consented sharing is a CrystalMatrix-era feature

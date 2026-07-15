@@ -28,3 +28,4 @@ class Memory:
     summaries: list = field(default_factory=list)     # condensed older history
     notes: list = field(default_factory=list)         # things told to remember
     facts: dict = field(default_factory=dict)         # structured key -> value facts
+    reflections: list = field(default_factory=list)   # her own gentle insights

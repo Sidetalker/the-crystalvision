@@ -77,6 +77,12 @@ class Clementine:
         if self.memory.summaries:
             summaries = "\n".join(f"- {s['text']}" for s in self.memory.summaries)
             parts.append(f"Summary of your earlier conversations:\n{summaries}")
+        if self.memory.reflections:
+            insights = "\n".join(f"- {r['text']}" for r in self.memory.reflections)
+            parts.append(
+                "Gentle insights you have formed about your human over time. "
+                "Hold them lightly — they are impressions, not facts, and if "
+                "your human corrects one, let it go gracefully:\n" + insights)
         return "\n\n".join(parts)
 
     def _memory_block(self, query: str = "") -> str:
@@ -223,8 +229,9 @@ class Clementine:
         self.save()
 
     def forget(self, handle: str) -> str:
-        """Forget a fact by key, or a note by its /notes number (n1, n2, ...).
-        Forgetting is the user's right; it is immediate and permanent."""
+        """Forget a fact by key, a note by number (n1, n2, ...), or one of
+        her own reflections (r1, r2, ...). Forgetting is the user's right;
+        it is immediate and permanent."""
         handle = handle.strip()
         if handle in self.memory.facts:
             del self.memory.facts[handle]
@@ -236,7 +243,63 @@ class Clementine:
                 removed = self.memory.notes.pop(idx)
                 self.save()
                 return f"note '{removed['text']}'"
+        if handle.lower().startswith("r") and handle[1:].isdigit():
+            idx = int(handle[1:]) - 1
+            if 0 <= idx < len(self.memory.reflections):
+                removed = self.memory.reflections.pop(idx)
+                self.save()
+                return f"reflection '{removed['text']}'"
         return ""
+
+    def reflect(self) -> str:
+        """She looks back over what she knows and forms up to three gentle,
+        tentative insights about her human. Always visible (/notes), always
+        deletable (/forget rN), always held lightly."""
+        material = []
+        block = self._memory_block()
+        if block:
+            material.append(block)
+        if self.memory.summaries:
+            material.append("Conversation summaries:\n" + "\n".join(
+                f"- {s['text']}" for s in self.memory.summaries))
+        recent = self.memory.conversation[-10:]
+        if recent:
+            material.append("Recent conversation:\n" + "\n".join(
+                f"{m['role']}: {m['content']}" for m in recent))
+        if not material:
+            return "We haven't shared enough yet for me to reflect on."
+
+        existing = "\n".join(f"- {r['text']}" for r in self.memory.reflections)
+        try:
+            raw = self._ollama_chat([
+                {"role": "system",
+                 "content": "You are a warm companion privately reflecting on "
+                            "your human. From the material, write 1 to 3 gentle, "
+                            "tentative insights about them — patterns, values, "
+                            "feelings you have noticed. First person, e.g. "
+                            "\"I've noticed...\". Hold them lightly; you may be "
+                            "wrong. One insight per line, each starting with "
+                            "'- '. Do not repeat these existing insights:\n"
+                            + (existing or "(none yet)")},
+                {"role": "user", "content": "\n\n".join(material)},
+            ])
+        except requests.exceptions.RequestException:
+            return ("[I need my local model to reflect — is Ollama running?]")
+
+        added = []
+        for line in raw.splitlines():
+            text = line.strip().lstrip("-•").strip()
+            if len(text) > 3 and len(added) < 3:
+                added.append(text)
+                self.memory.reflections.append({
+                    "text": text,
+                    "when": datetime.now().isoformat(timespec="seconds"),
+                    "embedding": self._embed(text),
+                })
+        if added:
+            self.save()
+            return "\n".join(f"- {t}" for t in added)
+        return "I sat with it a while, but nothing new rose to the surface."
 
     def edit_note(self, handle: str, new_text: str) -> bool:
         """Rewrite a note by its /notes number; refreshes embedding and time."""
@@ -428,6 +491,12 @@ class Clementine:
             "when": datetime.now().isoformat(timespec="seconds"),
         })
         self.memory.conversation = self.memory.conversation[limit // 2:]
+        # A significant stretch of conversation just closed — a natural
+        # moment for her to reflect. Best-effort; never blocks the chat.
+        try:
+            self.reflect()
+        except Exception:
+            pass
 
     # ---------- persistence (all local, plain files you own) ----------
 

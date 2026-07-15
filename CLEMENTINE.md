@@ -40,6 +40,7 @@ clementine_web.py       local web interface
 | **Profiles** | Separate people, separate memories — each profile is its own isolated folder, switchable in the web UI or via `--profile` | ✅ Working (v6) |
 | **Live Streaming (web)** | Her replies appear word-by-word in the browser, with a Stop button; a stopped reply keeps what was said | ✅ Working (v8) |
 | **Per-Profile Model** | Each profile can prefer its own model (`/model` remembers; editable in the web profile card) | ✅ Working (v8) |
+| **Reflection** | She forms gentle, tentative insights about her human — on invitation (`/reflect`) and after long conversations. Always visible, always deletable (`/forget rN`) | ✅ Working (v10) |
 | **Voice** | Deferred deliberately: browser speech APIs send audio to cloud servers, which breaks sovereignty. Waiting on a local path (e.g. whisper.cpp) | ⬜ Planned (local-only) |
 | **Personality Layer** | Tone, warmth, chosen name, temperature, style guidance | 🟡 Basic layer working; emotional-tone tracking still to come |
 | **Privacy Controls** | Everything stays on-device in local files you own (git-ignored) | 🟡 Defined & enforced locally; on-disk encryption still to come |
