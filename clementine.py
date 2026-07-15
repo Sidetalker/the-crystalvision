@@ -3,6 +3,7 @@ Clementine - Sovereign Edge AGI Companion
 v2: layered memory, personality tuning, streaming chat (local via Ollama)
 v3: semantic memory recall via local Ollama embeddings
 v4: memory management (forget/edit), gentle recency weighting, tags
+v5: friendlier errors, /summary command, shared brain for the web UI
 
 Everything runs on your own device. Nothing leaves it.
 """
@@ -265,6 +266,29 @@ class Clementine:
         self.personality.name = name.strip()
         self.save()
 
+    def summarize(self, topic: str = "") -> str:
+        """Summarize what she remembers, optionally about a topic. Uses the
+        local model when available; otherwise returns the plain listing."""
+        listing = self._memory_block(topic)
+        if self.memory.summaries:
+            past = "\n".join(f"- {s['text']}" for s in self.memory.summaries)
+            listing = (listing + "\n\n" if listing else "") + \
+                      f"Past conversation summaries:\n{past}"
+        if not listing:
+            return "I don't have any memories to summarize yet."
+        try:
+            return self._ollama_chat([
+                {"role": "system",
+                 "content": "You are a warm, sincere companion. Summarize what "
+                            "you remember about your human from these memory "
+                            "notes — first person, brief, and kind."
+                            + (f" Focus on: {topic}." if topic else "")},
+                {"role": "user", "content": listing},
+            ])
+        except requests.exceptions.RequestException:
+            return ("The model is offline, so here is everything as I keep it:\n\n"
+                    + listing)
+
     # ---------- talking ----------
 
     def chat(self, user_message: str, stream_to=None) -> str:
@@ -276,10 +300,17 @@ class Clementine:
                     + self.memory.conversation)
         try:
             reply = self._ollama_chat(messages, stream_to=stream_to)
-        except requests.exceptions.RequestException as e:
-            # Leave history consistent so the message can simply be re-sent.
+        except requests.exceptions.ConnectionError:
+            self.memory.conversation.pop()  # keep history consistent for re-send
+            return ("[I can't reach my local model — is Ollama running? "
+                    f"Try: ollama serve, then ollama pull {self.model}]")
+        except requests.exceptions.Timeout:
             self.memory.conversation.pop()
-            return f"[Error connecting to local model: {e}]"
+            return ("[That took too long — the model may still be loading. "
+                    "Give it a moment and try again.]")
+        except requests.exceptions.RequestException as e:
+            self.memory.conversation.pop()
+            return f"[Error talking to the local model: {e}]"
 
         self.memory.conversation.append({"role": "assistant", "content": reply})
         self._condense_if_needed()
@@ -377,6 +408,7 @@ HELP = """Commands:
   /notes            show everything she remembers (facts by key, notes numbered)
   /forget <handle>  forget a fact by key or a note by number, e.g. /forget n2
   /editnote <n> <text>  rewrite a note, e.g. /editnote n1 she prefers dawn walks
+  /summary [topic]  ask her to summarize what she remembers (optionally on a topic)
   /style <text>     tune her voice, e.g. /style more poetic, fewer questions
   /temp <0.0-1.5>   set temperature (playfulness)
   /model <tag>      switch the local model, e.g. /model llama3.2:3b
@@ -474,6 +506,9 @@ def main():
         elif user_input.lower().startswith("/model "):
             companion.model = user_input[7:].strip()
             print(f"[Now using model: {companion.model}]\n")
+        elif user_input.lower().startswith("/summary"):
+            topic = user_input[8:].strip()
+            print(f"{name}: {companion.summarize(topic)}\n")
         else:
             print(f"{name}: ", end="", flush=True)
             companion.chat(user_input, stream_to=sys.stdout)

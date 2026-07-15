@@ -26,6 +26,8 @@ The framework is the code and system that makes Clementine work (`clementine.py`
 | **Semantic Recall** | Finds relevant memories by *meaning* using local Ollama embeddings — no cloud, no PyTorch | ✅ Working (v3) |
 | **User Control** | Change her name, teach/forget/edit her memories, tag them, tune her voice | ✅ Working (`/name`, `/iam`, `/fact`, `/remember`, `/notes`, `/forget`, `/editnote`, `/style`, `/temp`) |
 | **Gradual Forgetting** | Recency-weighted recall — older memories gently fade in ranking (floor, never deleted) unless the user forgets them explicitly | ✅ Working (v4) |
+| **Memory Summaries** | `/summary [topic]` — she summarizes what she remembers, in her own voice | ✅ Working (v5) |
+| **Web Interface** | Local browser UI (`clementine_web.py`) — chat plus a live memory panel with teach/forget; 127.0.0.1 only | ✅ Working (v5) |
 | **Personality Layer** | Tone, warmth, chosen name, temperature, style guidance | 🟡 Basic layer working; emotional-tone tracking still to come |
 | **Privacy Controls** | Everything stays on-device in local files you own (git-ignored) | 🟡 Defined & enforced locally; on-disk encryption still to come |
 | **MLX / alternative backends** | Support for Apple MLX and other local runtimes | ⬜ Planned |
@@ -53,6 +55,16 @@ python clementine.py
 ```
 
 Semantic recall is optional: if `nomic-embed-text` isn't present, Clementine simply keeps using her full layered memory — nothing breaks.
+
+### The web interface
+
+Prefer a browser to a terminal? Same Clementine, same memory:
+
+```bash
+python clementine_web.py        # then open http://127.0.0.1:5000
+```
+
+Chat on the left; her memory on the right with live teach and forget. The page is served **only on 127.0.0.1** — it is never reachable from outside your machine, and nothing on it leaves your device.
 
 ## Choosing a Model for Your Hardware
 
