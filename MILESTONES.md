@@ -46,10 +46,12 @@
 |------|-------|----------------|--------|
 | 9 | Personality Refinement | Refine system prompt for warmth, honesty, gentle wit · Reduce robotic language · Test personality consistency | ⬜ |
 | 10 | Presence & Emotional Intelligence | Better responses to emotional topics · Light curiosity and follow-up questions · Feel "present," not just helpful | ⬜ |
-| 11 | Command System | Clean command interface (teach, forget, remember, summary…) · Commands feel natural | 🟡 |
-| 12 | Interface Improvements | Simple terminal UI or basic web interface · Improve readability · Basic conversation logging | ⬜ |
+| 11 | Command System | Clean command interface (teach, forget, remember, summary…) · Commands feel natural | ✅ |
+| 12 | Interface Improvements | Simple terminal UI or basic web interface · Improve readability · Basic conversation logging | ✅ * |
 
-**End of Month 3 goal:** Clementine feels like a distinct personality with emotional presence, not just a tool.
+\* Local web interface shipped (`clementine_web.py`, 127.0.0.1 only); conversation logging is inherent (memory persists locally).
+
+**End of Month 3 goal:** Clementine feels like a distinct personality with emotional presence, not just a tool. — *Weeks 9–10 (personality & presence) remain the open heart of Month 3.*
 
 ---
 
@@ -73,7 +75,7 @@
 | 17 | Memory Reflection | Clementine reflects on past conversations · Simple insights from memory | ⬜ |
 | 18 | Memory Organization | Basic categorization/tagging · Retrieval of thematically related memories | ⬜ |
 | 19 | Multi-Instance Thinking | Run two separate Clementine instances · Document what communication would need · Light research into encrypted messaging | ⬜ |
-| 20 | Code Quality | Refactor for modularity · Improve documentation and comments · Prepare structure for future P2P integration | ⬜ |
+| 20 | Code Quality | Refactor for modularity · Improve documentation and comments · Prepare structure for future P2P integration | ✅ (early — `crystalcore/` package) |
 
 **End of Month 5 goal:** Memory system is significantly stronger, and early thinking has begun on how two Clementines could connect.
 

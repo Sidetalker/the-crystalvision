@@ -220,3 +220,4 @@ __marimo__/
 # Clementine local memory (never commit personal conversations)
 clementine_memory.json
 clementine_memory/
+clementine_profiles/
