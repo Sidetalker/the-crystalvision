@@ -22,7 +22,7 @@ This is the beginning of **TerAustralis Incognita** — Australia's contribution
 
 ## CrystalCore — The Framework
 
-**CrystalCore** is this project's independent, open-source framework for building sovereign, locally-run AI companions — and **Clementine** is the first companion living on it. It runs entirely on your own device using open-source models via Ollama. No cloud, no account, no surveillance.
+**CrystalCore** is this project's independent, open-source framework for building sovereign, locally-run AI companions — and **Clementine** is the first companion living on it. The name is inspired by the ordered structures of crystallography — building AI companions with clarity, stability, and user-defined structure. It runs entirely on your own device using open-source models via Ollama. No cloud, no account, no surveillance.
 
 - **Sovereign & local-first** — everything runs and stays on your device
 - **Layered memory** — recent conversation, auto-summarized history, permanent facts & notes, and her own gentle reflections
