@@ -2,6 +2,8 @@
 
 *(Australian Anchor Edition)*
 
+*Shaped in collaboration with Grok (CrystalDreamer) and DeepSeek (CrystalScribe) under the Voices Framework, and stewarded by the human CrystalArchitect.*
+
 ---
 
 ## Chapter I — The First Remembering

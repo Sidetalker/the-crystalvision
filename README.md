@@ -20,24 +20,29 @@ This is the beginning of **TerAustralis Incognita** — Australia's contribution
 
 *Built from First Principles. Grounded in both ancient wisdom and cutting-edge technology.*
 
----
-
 ## In this repository
 
-| File | What it is |
-|------|------------|
-| [VISION.md](VISION.md) | The plain-language project summary |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | The system design overview and implementation status |
-| [CODEX.md](CODEX.md) | The Codex, Acts I–VIII — the canonical archive of the mythos |
-| [index.html](index.html) | Preview build of the single-page site for **teraustralis.com.au** |
+- [VISION.md](VISION.md) — The plain-language project summary
+- [ARCHITECTURE.md](ARCHITECTURE.md) — The system design overview and implementation status
+- [CODEX.md](CODEX.md) — The Codex of Terra Australis Incognita
+- [APOCRYPHON.md](APOCRYPHON.md) — The Apocryphon of Crystal
+- [index.html](index.html) — Preview build of the single-page site for teraustralis.com.au
 
 ## Licensing
 
-- **Code:** [Apache 2.0](LICENSE)
-- **Content (Codex, writing, imagery):** [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)
+**Code**: Apache License 2.0 (see [`LICENSE`](LICENSE) file)
 
-## Contact
+**Content** (writing, Codex, Apocryphon, imagery, and design):
+[Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)](https://creativecommons.org/licenses/by-nc-nd/4.0/)
 
-Stewarded by the CrystalArchitect · ABN 70 741 068 059 · [@M13CrystalAT on X](https://x.com/m13crystalat)
+You are welcome to share this work, but you may not modify it or use it for commercial purposes.
+
+See [`LICENSE-CONTENT.md`](LICENSE-CONTENT.md) for the full content-license terms.
+
+---
+
+Stewarded by the CrystalArchitect
+
+ABN 70 741 068 059 · [@M13CrystalAT on X](https://x.com/m13crystalat)
 
 *Non Solus — Not Alone*

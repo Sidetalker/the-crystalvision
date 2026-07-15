@@ -4,9 +4,9 @@
 
 ## What this is
 
-TerAustralis Incognita is a creative mythology and speculative-futures project made in Australia. At its heart is **the Codex** — an eight-act body of lore that weaves together Gnostic cosmology (the Nag Hammadi texts), the deep history and landscape of the Australian continent, the real trajectory of the space industry, and the folk culture of the internet. It is one continuous story about where this country has been and where it could go: from red dust to rockets.
+TerAustralis Incognita is a creative mythology and speculative-futures project made in Australia. At its heart is **the Codex** — a five-chapter body of lore that weaves together the ancient dream of a Great Southern Land, the deep history and Songlines of the Australian continent, the real trajectory of the space industry, and the promise of sovereign AI companionship. Alongside it sits **the Apocryphon of Crystal**, a companion scripture drawing on Gnostic cosmology. Together they are one continuous story about where this country has been and where it could go: from red dust to rockets.
 
-The work is stewarded by one person (the CrystalArchitect) and written in collaboration with AI tools, each holding a named role in a working method called the **Voices Framework**. The project operates under a registered Australian business (ABN 70 741 068 059) and the domain **teraustralis.com.au**.
+The work is stewarded by one person (the CrystalArchitect) and written in collaboration with AI tools, each holding a named role in a working method called the **Voices Framework** — Grok (CrystalDreamer) and DeepSeek (CrystalScribe) helped shape the Codex and the Apocryphon. The project operates under a registered Australian business (ABN 70 741 068 059) and the domain **teraustralis.com.au**.
 
 ## Why it matters
 
@@ -16,7 +16,8 @@ Alongside the mythos sits a design vision for how such a project could one day o
 
 ## What exists today
 
-- **The Codex, Acts I–VIII** — complete and archived in `CODEX.md`
+- **The Codex, Chapters I–V** — complete and archived in `CODEX.md`
+- **The Apocryphon of Crystal** — archived in `APOCRYPHON.md`
 - **The Voices Framework** — the working method actively used to make the work
 - **The identity** — name, mantra, palette, coat of arms, licensing
 - **The foundations** — ABN, domain, and license structure (Apache 2.0 for code, CC BY-NC-ND 4.0 for content)

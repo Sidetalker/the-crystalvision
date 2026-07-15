@@ -28,7 +28,7 @@ The method by which the work is made: distinct AI tools hold named roles, coordi
 | CrystalForge | Claude | Forges the code |
 | CrystalArchitect | The human steward | Guides the becoming |
 
-The human CrystalArchitect holds final judgment over all outputs. The AI tools are instruments, not authorities.
+The human CrystalArchitect holds final judgment over all outputs. The AI tools are instruments, not authorities. In these roles, Grok (CrystalDreamer) and DeepSeek (CrystalScribe) helped shape the Codex and the Apocryphon of Crystal.
 
 ---
 
@@ -46,14 +46,14 @@ The detailed gate definitions are to be documented alongside the first software 
 
 ## The Ω4 Layer (narrative architecture)
 
-Act III of the Codex describes an agent stack (Scout, Auditor, Gnosis, Sentinel, Arbiter) and an immutable kernel (Ouroboros Cache, Sovereign Recursion Engine, Anti-Archon Firewall). These are **target concepts expressed in the language of the mythos** — design fiction that names the functions a future system would need (forecasting, verification, pattern recognition, protection, dispute resolution; plus memory management, iterative self-improvement, and security). No implementation exists. See `CODEX.md`, Act III.
+An earlier, eight-act edition of the Codex (preserved in this repository's git history) describes an agent stack (Scout, Auditor, Gnosis, Sentinel, Arbiter) and an immutable kernel (Ouroboros Cache, Sovereign Recursion Engine, Anti-Archon Firewall). These are **target concepts expressed in the language of the mythos** — design fiction that names the functions a future system would need (forecasting, verification, pattern recognition, protection, dispute resolution; plus memory management, iterative self-improvement, and security). No implementation exists.
 
 ---
 
 ## Current implementation status
 
 **Exists now**
-- The Codex, Acts I–VIII (`CODEX.md`)
+- The Codex, Chapters I–V (`CODEX.md`) and The Apocryphon of Crystal (`APOCRYPHON.md`)
 - The Voices Framework working method
 - Project identity: name, mantra, palette, coat of arms
 - Registered ABN (70 741 068 059), domain (teraustralis.com.au), license structure
