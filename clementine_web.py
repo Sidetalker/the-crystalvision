@@ -12,7 +12,7 @@ can switch between them freely. Nothing leaves your device.
 import argparse
 from pathlib import Path
 
-from flask import Flask, jsonify, render_template_string, request
+from flask import Flask, Response, jsonify, render_template_string, request
 
 from crystalcore import (Clementine, delete_profile, list_profiles,
                          profile_dir, profile_meta)
@@ -77,10 +77,12 @@ PAGE = """<!doctype html>
     <form id="send">
       <input id="box" autocomplete="off" placeholder="Say something…" autofocus>
       <button>Send</button>
+      <button type="button" id="stop" class="small" style="display:none">Stop</button>
     </form>
   </div>
   <aside>
-    <h2>Her memory</h2>
+    <h2>Her memory <button class="small" id="reflectbtn" type="button"
+        title="Invite her to form gentle insights about you">reflect</button></h2>
     <div id="mems"></div>
     <form id="teach">
       <input id="teachtext" placeholder="Teach her something… (#tags ok)">
@@ -91,6 +93,7 @@ PAGE = """<!doctype html>
     <form id="pmeta">
       <input id="pavatar" placeholder="Avatar emoji, e.g. 🌟" size="12">
       <input id="pdesc" placeholder="Short description" style="width:100%;margin-top:8px">
+      <input id="pmodel" placeholder="Model for this profile (e.g. llama3.2:3b)" style="width:100%;margin-top:8px">
       <button style="margin-top:8px">Save profile</button>
     </form>
     <div style="margin-top:14px">
@@ -112,7 +115,9 @@ function bubble(who, text){
 async function refreshMems(){
   const r = await fetch('/api/memories'); const data = await r.json();
   const box = document.getElementById('mems'); box.innerHTML = '';
-  for (const m of [...data.facts, ...data.notes]){
+  const all = [...data.facts, ...data.notes,
+               ...(data.reflections || []).map(r => ({...r, text: '✨ ' + r.text}))];
+  for (const m of all){
     const row = document.createElement('div'); row.className = 'mem';
     const left = document.createElement('div');
     left.textContent = (m.handle.startsWith('n') && /^n\\d+$/.test(m.handle)
@@ -133,17 +138,34 @@ async function refreshMems(){
     row.appendChild(left); row.appendChild(btn); box.appendChild(row);
   }
 }
+let controller = null;
+const stopBtn = document.getElementById('stop');
+stopBtn.onclick = () => { if (controller) controller.abort(); };
 document.getElementById('send').onsubmit = async (e) => {
   e.preventDefault();
   const boxEl = document.getElementById('box');
   const msg = boxEl.value.trim(); if (!msg) return;
   boxEl.value = ''; bubble('you', msg);
-  const thinking = bubble('her', '…');
-  const r = await fetch('/api/chat', {method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({message: msg})});
-  const data = await r.json();
-  thinking.textContent = data.reply;
+  const d = bubble('her', '');
+  controller = new AbortController();
+  stopBtn.style.display = 'inline-block';
+  try {
+    const r = await fetch('/api/chat/stream', {method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({message: msg}), signal: controller.signal});
+    const reader = r.body.getReader();
+    const dec = new TextDecoder();
+    while (true){
+      const {done, value} = await reader.read();
+      if (done) break;
+      d.textContent += dec.decode(value, {stream: true});
+      log.scrollTop = log.scrollHeight;
+    }
+  } catch (err) {
+    d.textContent += d.textContent ? ' — [stopped]' : '[stopped]';
+  }
+  stopBtn.style.display = 'none';
+  controller = null;
   refreshMems();
 };
 async function refreshProfiles(){
@@ -159,6 +181,7 @@ async function refreshProfiles(){
       document.getElementById('heravatar').textContent = p.avatar || '';
       document.getElementById('pavatar').value = p.avatar || '';
       document.getElementById('pdesc').value = p.description || '';
+      document.getElementById('pmodel').value = p.model || '';
     }
     sel.appendChild(o);
   }
@@ -197,8 +220,16 @@ document.getElementById('pmeta').onsubmit = async (e) => {
   await fetch('/api/profile/meta', {method:'POST',
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({avatar: document.getElementById('pavatar').value.trim(),
-                          description: document.getElementById('pdesc').value.trim()})});
+                          description: document.getElementById('pdesc').value.trim(),
+                          model: document.getElementById('pmodel').value.trim()})});
   refreshProfiles();
+};
+document.getElementById('reflectbtn').onclick = async () => {
+  const b = bubble('her', 'reflecting…');
+  const r = await fetch('/api/reflect', {method:'POST'});
+  const data = await r.json();
+  b.textContent = data.insights;
+  refreshMems();
 };
 document.getElementById('delprofile').onclick = async () => {
   const name = prompt('Delete which profile? (cannot be the active one — this erases its memory forever)');
@@ -239,6 +270,15 @@ def create_app(companion: Clementine) -> Flask:
             return jsonify({"error": "empty message"}), 400
         return jsonify({"reply": holder["c"].chat(message)})
 
+    @app.post("/api/chat/stream")
+    def chat_stream():
+        message = ((request.get_json(silent=True) or {}).get("message") or "").strip()
+        if not message:
+            return jsonify({"error": "empty message"}), 400
+        return Response(holder["c"].chat_stream(message),
+                        mimetype="text/plain; charset=utf-8",
+                        headers={"X-Accel-Buffering": "no"})
+
     @app.get("/api/memories")
     def memories():
         c = holder["c"]
@@ -248,7 +288,14 @@ def create_app(companion: Clementine) -> Flask:
         notes = [{"handle": f"n{i}", "text": n["text"],
                   "tags": n.get("tags") or []}
                  for i, n in enumerate(c.memory.notes, 1)]
-        return jsonify({"facts": facts, "notes": notes})
+        reflections = [{"handle": f"r{i}", "text": r["text"], "tags": []}
+                       for i, r in enumerate(c.memory.reflections, 1)]
+        return jsonify({"facts": facts, "notes": notes,
+                        "reflections": reflections})
+
+    @app.post("/api/reflect")
+    def reflect():
+        return jsonify({"insights": holder["c"].reflect()})
 
     @app.post("/api/teach")
     def teach():
@@ -282,10 +329,11 @@ def create_app(companion: Clementine) -> Flask:
                 profiles.append({"profile": n,
                                  "avatar": c.personality.avatar,
                                  "description": c.personality.description,
-                                 "name": c.personality.name})
+                                 "name": c.personality.name,
+                                 "model": c.model})
             elif n == "default":
                 profiles.append({"profile": n, "avatar": "",
-                                 "description": "", "name": ""})
+                                 "description": "", "name": "", "model": ""})
             else:
                 profiles.append(profile_meta(n))
         return jsonify({"current": current, "profiles": profiles})
@@ -298,6 +346,8 @@ def create_app(companion: Clementine) -> Flask:
             c.personality.avatar = str(data["avatar"]).strip()[:8]
         if "description" in data:
             c.personality.description = str(data["description"]).strip()[:200]
+        if "model" in data and str(data["model"]).strip():
+            c.set_model(str(data["model"]))
         c.save()
         return jsonify({"ok": True})
 

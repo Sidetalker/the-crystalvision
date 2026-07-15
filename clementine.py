@@ -25,10 +25,13 @@ HELP = """Commands:
   /remember <text>  ask her to permanently remember something (add #tags if you like)
   /fact <key> <value>  teach her a structured fact, e.g. /fact birthday June 3
                     (teach the same key again to correct it)
-  /notes            show everything she remembers (facts by key, notes numbered)
+  /notes [#tag]     show what she remembers (optionally only one #tag)
   /forget <handle>  forget a fact by key or a note by number, e.g. /forget n2
   /editnote <n> <text>  rewrite a note, e.g. /editnote n1 she prefers dawn walks
   /summary [topic]  ask her to summarize what she remembers (optionally on a topic)
+  /reflect          invite her to reflect and form gentle insights about you
+                    (she also reflects on her own after long conversations;
+                     insights appear in /notes as r1, r2... — /forget rN removes one)
   /style <text>     tune her voice, e.g. /style more poetic, fewer questions
   /temp <0.0-1.5>   set temperature (playfulness)
   /model <tag>      switch the local model, e.g. /model llama3.2:3b
@@ -96,15 +99,26 @@ def main():
                 print(f"[Fact remembered: {parts[0]} = {parts[1]}]\n")
             else:
                 print("[Usage: /fact <key> <value>, e.g. /fact birthday June 3]\n")
-        elif user_input.lower() == "/notes":
+        elif user_input.lower().startswith("/notes"):
+            want = user_input[6:].strip().lstrip("#").lower()
+            def _shown(store):
+                return not want or want in (store.get("tags") or [])
             for key, fact in companion.memory.facts.items():
+                if not _shown(fact):
+                    continue
                 tags = " ".join("#" + t for t in fact.get("tags") or [])
                 print(f"  - {key}: {fact['value']}"
                       f"{'  [' + tags + ']' if tags else ''}  ({fact['updated']})")
             for i, note in enumerate(companion.memory.notes, 1):
+                if not _shown(note):
+                    continue
                 tags = " ".join("#" + t for t in note.get("tags") or [])
                 print(f"  n{i} - {note['text']}"
                       f"{'  [' + tags + ']' if tags else ''}  ({note['when']})")
+            if companion.memory.reflections and not want:
+                print("  her own reflections (hold lightly; /forget rN removes one):")
+                for i, r in enumerate(companion.memory.reflections, 1):
+                    print(f"  r{i} - {r['text']}  ({r['when']})")
             print()
         elif user_input.lower().startswith("/forget "):
             forgotten = companion.forget(user_input[8:])
@@ -130,11 +144,13 @@ def main():
             except ValueError:
                 print("[Please give a number, e.g. /temp 0.8]\n")
         elif user_input.lower().startswith("/model "):
-            companion.model = user_input[7:].strip()
-            print(f"[Now using model: {companion.model}]\n")
+            companion.set_model(user_input[7:])
+            print(f"[Now using model: {companion.model} — remembered for this profile]\n")
         elif user_input.lower().startswith("/summary"):
             topic = user_input[8:].strip()
             print(f"{name}: {companion.summarize(topic)}\n")
+        elif user_input.lower() == "/reflect":
+            print(f"{name} reflects…\n{companion.reflect()}\n")
         else:
             print(f"{name}: ", end="", flush=True)
             companion.chat(user_input, stream_to=sys.stdout)

@@ -57,6 +57,8 @@ class Clementine:
         self.personality = Personality()
         self.memory = Memory()
         self.load()
+        if self.personality.model:  # a profile may prefer its own model
+            self.model = self.personality.model
 
     # ---------- identity & memory ----------
 
@@ -75,6 +77,12 @@ class Clementine:
         if self.memory.summaries:
             summaries = "\n".join(f"- {s['text']}" for s in self.memory.summaries)
             parts.append(f"Summary of your earlier conversations:\n{summaries}")
+        if self.memory.reflections:
+            insights = "\n".join(f"- {r['text']}" for r in self.memory.reflections)
+            parts.append(
+                "Gentle insights you have formed about your human over time. "
+                "Hold them lightly — they are impressions, not facts, and if "
+                "your human corrects one, let it go gracefully:\n" + insights)
         return "\n\n".join(parts)
 
     def _memory_block(self, query: str = "") -> str:
@@ -83,9 +91,17 @@ class Clementine:
         relevant ones by meaning using local embeddings — no data leaves the
         device, and if the embedding model isn't available it simply falls
         back to showing everything."""
+        # #tags in the query filter candidates before semantic ranking,
+        # e.g. "what do you remember? #family" or /summary #family
+        query, qtags = self._split_tags(query)
+
+        def keep(store):
+            return not qtags or set(qtags) & set(store.get("tags") or [])
+
         fact_items = [(self._display(f"{k}: {v['value']}", v), v)
-                      for k, v in self.memory.facts.items()]
-        note_items = [(self._display(n["text"], n), n) for n in self.memory.notes]
+                      for k, v in self.memory.facts.items() if keep(v)]
+        note_items = [(self._display(n["text"], n), n)
+                      for n in self.memory.notes if keep(n)]
         total = len(fact_items) + len(note_items)
         if total == 0:
             return ""
@@ -213,8 +229,9 @@ class Clementine:
         self.save()
 
     def forget(self, handle: str) -> str:
-        """Forget a fact by key, or a note by its /notes number (n1, n2, ...).
-        Forgetting is the user's right; it is immediate and permanent."""
+        """Forget a fact by key, a note by number (n1, n2, ...), or one of
+        her own reflections (r1, r2, ...). Forgetting is the user's right;
+        it is immediate and permanent."""
         handle = handle.strip()
         if handle in self.memory.facts:
             del self.memory.facts[handle]
@@ -226,7 +243,63 @@ class Clementine:
                 removed = self.memory.notes.pop(idx)
                 self.save()
                 return f"note '{removed['text']}'"
+        if handle.lower().startswith("r") and handle[1:].isdigit():
+            idx = int(handle[1:]) - 1
+            if 0 <= idx < len(self.memory.reflections):
+                removed = self.memory.reflections.pop(idx)
+                self.save()
+                return f"reflection '{removed['text']}'"
         return ""
+
+    def reflect(self) -> str:
+        """She looks back over what she knows and forms up to three gentle,
+        tentative insights about her human. Always visible (/notes), always
+        deletable (/forget rN), always held lightly."""
+        material = []
+        block = self._memory_block()
+        if block:
+            material.append(block)
+        if self.memory.summaries:
+            material.append("Conversation summaries:\n" + "\n".join(
+                f"- {s['text']}" for s in self.memory.summaries))
+        recent = self.memory.conversation[-10:]
+        if recent:
+            material.append("Recent conversation:\n" + "\n".join(
+                f"{m['role']}: {m['content']}" for m in recent))
+        if not material:
+            return "We haven't shared enough yet for me to reflect on."
+
+        existing = "\n".join(f"- {r['text']}" for r in self.memory.reflections)
+        try:
+            raw = self._ollama_chat([
+                {"role": "system",
+                 "content": "You are a warm companion privately reflecting on "
+                            "your human. From the material, write 1 to 3 gentle, "
+                            "tentative insights about them — patterns, values, "
+                            "feelings you have noticed. First person, e.g. "
+                            "\"I've noticed...\". Hold them lightly; you may be "
+                            "wrong. One insight per line, each starting with "
+                            "'- '. Do not repeat these existing insights:\n"
+                            + (existing or "(none yet)")},
+                {"role": "user", "content": "\n\n".join(material)},
+            ])
+        except requests.exceptions.RequestException:
+            return ("[I need my local model to reflect — is Ollama running?]")
+
+        added = []
+        for line in raw.splitlines():
+            text = line.strip().lstrip("-•").strip()
+            if len(text) > 3 and len(added) < 3:
+                added.append(text)
+                self.memory.reflections.append({
+                    "text": text,
+                    "when": datetime.now().isoformat(timespec="seconds"),
+                    "embedding": self._embed(text),
+                })
+        if added:
+            self.save()
+            return "\n".join(f"- {t}" for t in added)
+        return "I sat with it a while, but nothing new rose to the surface."
 
     def edit_note(self, handle: str, new_text: str) -> bool:
         """Rewrite a note by its /notes number; refreshes embedding and time."""
@@ -246,6 +319,12 @@ class Clementine:
 
     def set_name(self, name: str):
         self.personality.name = name.strip()
+        self.save()
+
+    def set_model(self, tag: str):
+        """Switch the local model and remember the choice for this profile."""
+        self.model = tag.strip()
+        self.personality.model = self.model
         self.save()
 
     def summarize(self, topic: str = "") -> str:
@@ -299,37 +378,91 @@ class Clementine:
         self.save()
         return reply
 
-    def _ollama_chat(self, messages, stream_to=None) -> str:
+    def chat_stream(self, user_message: str):
+        """Generator variant of chat(): yields reply tokens as they arrive.
+        Memory is finalized when the stream ends — including a partial reply
+        if the human stops her mid-sentence (what was said, was said)."""
+        self.memory.conversation.append({"role": "user", "content": user_message})
+        messages = ([{"role": "system", "content": self.system_prompt(user_message)}]
+                    + self.memory.conversation)
+
+        pieces = []
+        finalized = False
+        try:
+            for piece in self._ollama_stream(messages):
+                pieces.append(piece)
+                yield piece
+        except requests.exceptions.ConnectionError:
+            self.memory.conversation.pop()
+            finalized = True
+            yield ("[I can't reach my local model — is Ollama running? "
+                   f"Try: ollama serve, then ollama pull {self.model}]")
+        except requests.exceptions.Timeout:
+            self.memory.conversation.pop()
+            finalized = True
+            yield ("[That took too long — the model may still be loading. "
+                   "Give it a moment and try again.]")
+        except requests.exceptions.RequestException as e:
+            self.memory.conversation.pop()
+            finalized = True
+            yield f"[Error talking to the local model: {e}]"
+        finally:
+            if not finalized:
+                reply = "".join(pieces)
+                if reply:
+                    self.memory.conversation.append(
+                        {"role": "assistant", "content": reply})
+                    self._condense_if_needed()
+                else:
+                    self.memory.conversation.pop()
+                self.save()
+
+    def _ollama_stream(self, messages):
+        """Yield reply pieces from the local model as they are generated."""
         response = requests.post(
             OLLAMA_URL,
             json={
                 "model": self.model,
                 "messages": messages,
-                "stream": stream_to is not None,
+                "stream": True,
                 "options": {"temperature": self.personality.temperature},
             },
             timeout=300,
-            stream=stream_to is not None,
+            stream=True,
         )
         response.raise_for_status()
-
-        if stream_to is None:
-            return response.json()["message"]["content"]
-
-        pieces = []
         for line in response.iter_lines():
             if not line:
                 continue
             chunk = json.loads(line)
             piece = chunk.get("message", {}).get("content", "")
             if piece:
+                yield piece
+            if chunk.get("done"):
+                break
+
+    def _ollama_chat(self, messages, stream_to=None) -> str:
+        if stream_to is not None:
+            pieces = []
+            for piece in self._ollama_stream(messages):
                 pieces.append(piece)
                 stream_to.write(piece)
                 stream_to.flush()
-            if chunk.get("done"):
-                break
-        stream_to.write("\n")
-        return "".join(pieces)
+            stream_to.write("\n")
+            return "".join(pieces)
+
+        response = requests.post(
+            OLLAMA_URL,
+            json={
+                "model": self.model,
+                "messages": messages,
+                "stream": False,
+                "options": {"temperature": self.personality.temperature},
+            },
+            timeout=300,
+        )
+        response.raise_for_status()
+        return response.json()["message"]["content"]
 
     # ---------- long-term memory ----------
 
@@ -358,6 +491,12 @@ class Clementine:
             "when": datetime.now().isoformat(timespec="seconds"),
         })
         self.memory.conversation = self.memory.conversation[limit // 2:]
+        # A significant stretch of conversation just closed — a natural
+        # moment for her to reflect. Best-effort; never blocks the chat.
+        try:
+            self.reflect()
+        except Exception:
+            pass
 
     # ---------- persistence (all local, plain files you own) ----------
 
@@ -369,9 +508,32 @@ class Clementine:
             json.dumps(asdict(self.memory), indent=2))
 
     def load(self):
-        config = self.memory_dir / "config.json"
-        memory = self.memory_dir / "memory.json"
-        if config.exists():
-            self.personality = Personality(**json.loads(config.read_text()))
-        if memory.exists():
-            self.memory = Memory(**json.loads(memory.read_text()))
+        self.personality = self._load_json(
+            self.memory_dir / "config.json", Personality)
+        self.memory = self._load_json(
+            self.memory_dir / "memory.json", Memory)
+
+    @staticmethod
+    def _load_json(path, cls):
+        """Load a dataclass from JSON, surviving two failure modes without
+        ever destroying data: unknown fields (a newer version's file) are
+        ignored, and a corrupt file is preserved under a .corrupt-* name —
+        her memory is never silently wiped."""
+        if not path.exists():
+            return cls()
+        try:
+            data = json.loads(path.read_text())
+            known = {k: v for k, v in data.items()
+                     if k in cls.__dataclass_fields__}
+            return cls(**known)
+        except (json.JSONDecodeError, TypeError, AttributeError, OSError):
+            stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+            backup = path.with_name(f"{path.name}.corrupt-{stamp}")
+            try:
+                path.rename(backup)
+                print(f"[Warning: {path.name} was unreadable. It has been "
+                      f"preserved as {backup.name} — nothing was deleted. "
+                      f"Starting this file fresh.]")
+            except OSError:
+                pass
+            return cls()

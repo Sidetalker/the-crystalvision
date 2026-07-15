@@ -17,6 +17,7 @@ class Personality:
     style_notes: str = ""       # freeform extra guidance, e.g. "more poetic"
     avatar: str = ""            # an emoji for this profile, e.g. "🌟"
     description: str = ""       # a short line about this profile
+    model: str = ""             # this profile's preferred model ("" = default)
 
 
 @dataclass
@@ -27,3 +28,4 @@ class Memory:
     summaries: list = field(default_factory=list)     # condensed older history
     notes: list = field(default_factory=list)         # things told to remember
     facts: dict = field(default_factory=dict)         # structured key -> value facts
+    reflections: list = field(default_factory=list)   # her own gentle insights
