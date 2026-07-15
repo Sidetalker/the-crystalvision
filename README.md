@@ -20,6 +20,21 @@ This is the beginning of **TerAustralis Incognita** — Australia's contribution
 
 *Built from First Principles. Grounded in both ancient wisdom and cutting-edge technology.*
 
+## CrystalCore — The Framework
+
+**CrystalCore** is this project's open-source framework for building sovereign, locally-run AI companions — and **Clementine** is the first companion living on it. It runs entirely on your own device using open-source models via Ollama. No cloud, no account, no surveillance.
+
+- **Sovereign & local-first** — everything runs and stays on your device
+- **Layered memory** — recent conversation, auto-summarized history, permanent facts & notes, and her own gentle reflections
+- **Semantic recall** — memories retrieved by meaning (local embeddings), with recency fading and `#tag` filtering
+- **Profiles** — multiple isolated companions, each with their own memory, name, avatar, and model
+- **Real-time interaction** — streaming replies in the terminal and a local web interface
+- **Full user control** — view, edit, tag, and forget any memory, including her reflections
+
+**Tech:** Python + Flask · plain human-readable JSON storage · local Ollama embeddings · open-source LLMs (Llama, Qwen, Gemma…). See [CLEMENTINE.md](CLEMENTINE.md) to run her.
+
+> **Disclaimer:** CrystalCore is an independent, open-source project. It is not affiliated with, endorsed by, or connected to xAI, Grok, Tesla, or any other AI company or platform. All memories and data remain on the user's device.
+
 ## In this repository
 
 - [VISION.md](VISION.md) — The plain-language project summary
