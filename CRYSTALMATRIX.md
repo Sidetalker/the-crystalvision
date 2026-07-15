@@ -130,16 +130,114 @@ This is the most vision-aligned combination, and also the most work — which is
 
 Timelines are aspirational, not commitments — they describe order and dependency more than dates.
 
-| Phase | Focus | Technologies | Goal | Status |
-|-------|-------|--------------|------|--------|
-| **1** | Sovereign local companion | Local memory + local LLM | Working Clementine with strong local memory | 🟢 **Underway** — Clementine v3 exists (`CLEMENTINE.md`) |
-| **2** | Encrypted P2P communication | libp2p + encryption | Companions connect directly and privately | ⬜ Next |
-| **3** | Zero-knowledge identity & consent | Halo2 / Circom | Prove identity and consent without revealing data | ⬜ Future |
-| **4** | Selective private memory sharing | ZKPs + basic DP | Share specific memories privately | ⬜ Future |
-| **5** | Collective intelligence layer | Differential Privacy + ZKPs | Safe aggregate insights across the network | ⬜ Future |
-| **6** | Full CrystalMatrix | All layers integrated | Mature sovereign network with emergence | ⬜ Future |
+### Phase 1 — Foundation (Now – 6 months) · 🟢 Largely built
 
-**Recommended starting point:** Phases 1 and 2. Get Clementine working well locally with good memory (largely done), then add basic encrypted peer-to-peer communication. Only introduce ZKPs and Differential Privacy once the core companion and basic networking are stable.
+**Goal:** Build a strong, sovereign, locally-running companion with meaningful memory.
+
+**Key technologies:** Local LLM (via Ollama or MLX) · vector embeddings for memory · local file-based storage · system prompt and personality layer.
+
+**Specific deliverables:**
+- Working Clementine prototype with short-term + long-term memory ✅
+- User can teach her important facts that persist ✅
+- All data stays on the user's device by default ✅
+- Clean, modular code structure, ready for future expansion 🟡
+
+**Status note:** Clementine v3 (`CLEMENTINE.md`) already delivers most of this — Ollama connection with streaming, semantic embedding memory, persistent taught facts, and local-only storage. Remaining: MLX backend support and further modularisation.
+
+**Challenges:** Keeping memory efficient and relevant · balancing personality with truthfulness · avoiding hallucinations while staying warm.
+
+**Success criteria:** Clementine holds coherent, multi-turn conversations with memory of past facts; the user feels she is starting to "know" them; everything runs fully locally with no external dependencies.
+
+### Phase 2 — Encrypted Peer-to-Peer Communication (6 – 12 months)
+
+**Goal:** Allow two sovereign companions to connect and communicate privately.
+
+**Key technologies:** libp2p (or similar P2P networking) · end-to-end encryption (Noise protocol or similar) · cryptographic identity (public/private keys) · connection request + approval system.
+
+**Specific deliverables:**
+- Companions can discover each other (with user permission)
+- Encrypted direct messaging between two companions
+- Users must explicitly approve connections
+- No central server stores messages or metadata
+
+**Challenges:** Making connection and discovery user-friendly · handling offline companions gracefully · preventing spam or unwanted connection requests.
+
+**Success criteria:** Two users can connect their companions and have private encrypted conversations; no data is shared without explicit user consent; the system feels safe and intentional.
+
+### Phase 3 — Zero-Knowledge Identity & Consent (12 – 18 months)
+
+**Goal:** Allow companions to prove things about themselves without revealing sensitive information.
+
+**Key technologies:** Zero-Knowledge Proofs (Halo2 or Circom) · cryptographic identity + ZK proofs · consent verification system.
+
+**Specific deliverables:**
+- A companion can prove it is a legitimate sovereign local companion
+- A companion can prove it has valid consent from its human to connect
+- Basic ZK proofs for simple claims (e.g. "I have been active for X time")
+
+**Challenges:** ZK proof generation is still slow and complex · making ZK technology usable for non-technical users · keeping proof sizes and verification times reasonable.
+
+**Success criteria:** Companions can verify each other's legitimacy and consent without revealing personal data; trust can begin to form between companions without full identity disclosure.
+
+### Phase 4 — Selective Private Memory Sharing (18 – 24 months)
+
+**Goal:** Enable meaningful but private memory sharing between companions.
+
+**Key technologies:** Zero-Knowledge Proofs (for proving facts about memories) · selective disclosure mechanisms · early Differential Privacy (for noisy summaries).
+
+**Specific deliverables:**
+- Companions can share specific memories while keeping others private
+- ZKPs prove "I know this about my human" without revealing the full memory
+- Basic noisy summaries when sharing broader patterns
+
+**Challenges:** Balancing usefulness with privacy (too much noise = useless sharing) · performance overhead of ZK proofs on memory · designing good user controls for what can be shared.
+
+**Success criteria:** Companions have richer interactions by selectively sharing memories; users feel they remain in full control of what gets shared.
+
+### Phase 5 — Collective Intelligence Layer (24 – 30 months)
+
+**Goal:** Enable safe, privacy-preserving collective insights across the network.
+
+**Key technologies:** Differential Privacy (main tool) · Zero-Knowledge Proofs (supporting role) · secure aggregation techniques.
+
+**Specific deliverables:**
+- Companions can contribute to network-wide patterns and insights
+- Strong privacy guarantees on aggregated data
+- Users can easily opt in or out of contributing to collective intelligence
+- Examples: emerging themes, shared values, collective emotional tone
+
+**Challenges:** Designing meaningful collective insights without compromising individual privacy · managing the privacy–utility tradeoff in Differential Privacy · avoiding centralisation in how collective insights are generated.
+
+**Success criteria:** The network generates useful collective intelligence while protecting individual privacy; users feel the collective layer adds value without feeling surveilled.
+
+### Phase 6 — Advanced Hybrid Privacy (30+ months)
+
+**Goal:** Create a mature, flexible, and powerful privacy architecture.
+
+**Key technologies:** A hybrid system combining Zero-Knowledge Proofs, Differential Privacy, and homomorphic encryption (where it becomes practical) · a context-aware privacy engine that chooses the right tool for each situation.
+
+**Specific deliverables:**
+- Companions can dynamically choose privacy levels based on the interaction
+- Advanced memory sharing with strong guarantees
+- Support for more complex collaboration between companions
+- Preparation for future AGI/ASI-level systems
+
+**Challenges:** High technical complexity · performance overhead · designing intuitive controls for users · keeping the system maintainable as it grows.
+
+**Success criteria:** The CrystalMatrix supports rich, private, and meaningful interaction between sovereign companions; privacy tools feel like enablers rather than obstacles; the system is ready to evolve as more powerful AI systems emerge.
+
+### Summary
+
+| Phase | Timeframe | Primary Technology | Main Goal | Difficulty |
+|-------|-----------|--------------------|-----------|------------|
+| 1 | Now – 6 mo | Local systems | Strong sovereign local companion | Medium — 🟢 largely built |
+| 2 | 6 – 12 mo | Encrypted P2P | Private companion-to-companion communication | Medium |
+| 3 | 12 – 18 mo | Zero-Knowledge Proofs | Identity & consent verification | High |
+| 4 | 18 – 24 mo | ZKPs + early DP | Selective private memory sharing | Very High |
+| 5 | 24 – 30 mo | Differential Privacy | Safe collective intelligence | High |
+| 6 | 30+ mo | Hybrid (ZK + DP + HE) | Mature, flexible privacy architecture | Very High |
+
+This roadmap is ambitious but grounded: it prioritises building strong foundations first, before layering on advanced privacy technologies.
 
 ---
 
