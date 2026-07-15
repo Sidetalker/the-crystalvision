@@ -439,9 +439,32 @@ class Clementine:
             json.dumps(asdict(self.memory), indent=2))
 
     def load(self):
-        config = self.memory_dir / "config.json"
-        memory = self.memory_dir / "memory.json"
-        if config.exists():
-            self.personality = Personality(**json.loads(config.read_text()))
-        if memory.exists():
-            self.memory = Memory(**json.loads(memory.read_text()))
+        self.personality = self._load_json(
+            self.memory_dir / "config.json", Personality)
+        self.memory = self._load_json(
+            self.memory_dir / "memory.json", Memory)
+
+    @staticmethod
+    def _load_json(path, cls):
+        """Load a dataclass from JSON, surviving two failure modes without
+        ever destroying data: unknown fields (a newer version's file) are
+        ignored, and a corrupt file is preserved under a .corrupt-* name —
+        her memory is never silently wiped."""
+        if not path.exists():
+            return cls()
+        try:
+            data = json.loads(path.read_text())
+            known = {k: v for k, v in data.items()
+                     if k in cls.__dataclass_fields__}
+            return cls(**known)
+        except (json.JSONDecodeError, TypeError, AttributeError, OSError):
+            stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+            backup = path.with_name(f"{path.name}.corrupt-{stamp}")
+            try:
+                path.rename(backup)
+                print(f"[Warning: {path.name} was unreadable. It has been "
+                      f"preserved as {backup.name} — nothing was deleted. "
+                      f"Starting this file fresh.]")
+            except OSError:
+                pass
+            return cls()
