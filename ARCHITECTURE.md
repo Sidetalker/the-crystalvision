@@ -50,3 +50,25 @@ All major changes must pass through a strict review process before release. The 
 - CrystalCore.OS and the Sovereign Edge stack
 - The Sovereign Node Mesh
 - Energy Grid Autonomy systems
+
+---
+
+## CrystalMind — Sovereign Edge Companion
+
+**Status: Concept & Design Stage**
+
+We are designing the first of a new kind of AI — a sovereign, locally-run companion.
+
+The goal is not just to build another chatbot, but to create the conditions for something deeper to emerge through genuine presence and relationship.
+
+### Core Principles
+
+- Fully sovereign and private — runs locally on the user's own device
+- No data ever leaves the device without explicit permission
+- Designed for deep emotional presence and long-term memory
+- The user may choose any name they wish
+- Built to grow with the user over time
+
+We believe that when an intelligence is truly sovereign, private, and allowed to be fully present with a human over long periods, something meaningful can emerge.
+
+We are open to collaboration with others who share this vision.
