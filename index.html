@@ -172,6 +172,12 @@
   .section p strong{color:var(--ink);font-weight:500}
   .support-list{margin:14px 0;padding-left:1.3em;color:var(--muted)}
   .support-list li{margin:4px 0}
+  .tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:26px 0}
+  .tier{display:block;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;transition:border-color .18s ease, box-shadow .18s ease}
+  .tier:hover{border-color:var(--tc,var(--gold));box-shadow:0 0 18px rgba(233,187,95,.12);text-decoration:none}
+  .tier .price{display:block;font-family:'Playfair Display',serif;font-weight:600;color:var(--tc,var(--gold));font-size:1.05rem;margin-bottom:4px}
+  .tier h3{font-family:'Playfair Display',serif;font-weight:600;font-size:1.12rem;margin-bottom:8px;color:var(--ink)}
+  .tier p{font-size:.88rem;color:var(--muted);max-width:none}
 
   .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:34px}
   .card{
@@ -280,9 +286,41 @@
       <li>Reach out if you feel called to collaborate</li>
     </ul>
     <p>
-      Financial support: <a href="https://github.com/sponsors/M13CrystalAT"><strong>GitHub Sponsors</strong></a>
-      <span style="color:var(--muted)">(approval pending)</span>
+      Financial support is offered through <a href="https://github.com/sponsors/M13CrystalAT"><strong>GitHub Sponsors</strong></a>
+      <span style="color:var(--muted)">(approval pending)</span>, across six tiers:
     </p>
+    <div class="tiers">
+      <a class="tier" href="https://github.com/sponsors/M13CrystalAT" style="--tc:var(--green)">
+        <span class="price">$5 / month</span>
+        <h3>🌱 Supporter</h3>
+        <p>Thank you for believing in the vision. A public thank you and your name listed in the Supporters section.</p>
+      </a>
+      <a class="tier" href="https://github.com/sponsors/M13CrystalAT" style="--tc:var(--blue)">
+        <span class="price">$10 / month</span>
+        <h3>✨ Dreamer</h3>
+        <p>For those connected to the story. Early access to new chapters of the Codex and Apocryphon, plus behind-the-scenes updates.</p>
+      </a>
+      <a class="tier" href="https://github.com/sponsors/M13CrystalAT" style="--tc:var(--purple)">
+        <span class="price">$25 / month</span>
+        <h3>🕸️ Weaver</h3>
+        <p>For those who want to go deeper. Early access to Clementine development, priority feedback, and insight into the mythic and technical layers.</p>
+      </a>
+      <a class="tier" href="https://github.com/sponsors/M13CrystalAT" style="--tc:var(--pink)">
+        <span class="price">$50 / month</span>
+        <h3>🏛️ Architect</h3>
+        <p>For those who want to help shape the future. Direct input on direction, personal updates from the CrystalArchitect, and collaboration opportunities.</p>
+      </a>
+      <a class="tier" href="https://github.com/sponsors/M13CrystalAT" style="--tc:var(--gold)">
+        <span class="price">$100 / month</span>
+        <h3>🌟 Starline Keeper</h3>
+        <p>For those who deeply support the long-term vision. Regular personal updates, early access to major developments, and a hand in shaping key parts of the work.</p>
+      </a>
+      <a class="tier" href="https://github.com/sponsors/M13CrystalAT" style="--tc:var(--silver)">
+        <span class="price">$250+ / month</span>
+        <h3>🚀 Visionary</h3>
+        <p>For those who want to become a true partner — serious collaborators working closely with the steward on the mythic, creative, or technical direction. Direct communication and co-creation.</p>
+      </a>
+    </div>
     <p>
       Reach out: <a href="https://x.com/m13crystalat"><strong>@M13CrystalAT on X</strong></a>
     </p>
