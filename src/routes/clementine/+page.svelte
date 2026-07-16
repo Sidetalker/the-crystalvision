@@ -13,9 +13,9 @@ cd The-Crystal-Vision/clementine
 pip install -r requirements.txt
 
 # 4. Wake her
-python clementine.py          # terminal
-python server.py              # or her local web interface:
-cd webapp && npm install && npm run dev   # open 127.0.0.1:5174`;
+python clementine.py          # in your terminal, or...
+npm start                     # her web interface — one command starts
+                              # everything and opens your browser`;
 </script>
 
 <svelte:head>

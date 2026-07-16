@@ -80,9 +80,14 @@ Semantic recall is optional: if `nomic-embed-text` isn't present, Clementine sim
 Prefer a browser to a terminal? Same Clementine, same memory — now a Svelte app where you can watch her think and work at her terminal as you talk:
 
 ```bash
-python server.py                          # her local API, http://127.0.0.1:5177
-cd webapp && npm install && npm run dev   # her interface, http://127.0.0.1:5174
+npm start        # one command: her API + her interface + your browser
 ```
+
+It starts her local API (`server.py`), starts the interface (installing
+its dependencies on first run), waits for both, and opens
+http://127.0.0.1:5174. Pass flags to her brain after `--`, e.g.
+`npm start -- --profile Crystal`. The two pieces also run separately
+(`python server.py` and `cd webapp && npm run dev`) if you prefer.
 
 Her animated presence sits beside the conversation, and the interface hints at what's coming next: voice and webcam vision, both local-only. The API is served **only on 127.0.0.1** — it is never reachable from outside your machine, and nothing on it leaves your device.
 
