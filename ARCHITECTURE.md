@@ -32,6 +32,8 @@ The working method used to develop this project. Each voice represents a distinc
 
 All major changes must pass through a strict review process before release. The human steward maintains final authority to approve or halt any development at any time.
 
+The working claim-discipline — status markers, release rules, and non-claims — is documented in [`GOVERNANCE.md`](GOVERNANCE.md).
+
 ---
 
 ## Current Implementation Status

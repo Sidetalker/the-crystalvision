@@ -44,6 +44,7 @@ This is the beginning of **TerAustralis Incognita** — Australia's contribution
 - [STRATEGY.md](STRATEGY.md) — The accelerated roadmap toward external readiness
 - [MILESTONES.md](MILESTONES.md) — The 6-month build plan with weekly milestones
 - [MEMORY.md](MEMORY.md) — Clementine's four-layer memory architecture (design, partially implemented)
+- [GOVERNANCE.md](GOVERNANCE.md) — How this project keeps its claims honest
 - [CODEX.md](CODEX.md) — The Codex of TerAustralis Incognita
 - [APOCRYPHON.md](APOCRYPHON.md) — The Apocryphon of Crystal
 - [SPONSORS.md](SPONSORS.md) — GitHub Sponsors tier descriptions
