@@ -21,6 +21,7 @@ from crystalcore import (BASE_PROMPT, Clementine, Memory, Personality,  # noqa: 
 
 HELP = """Commands:
   /name <name>      give her a name (or change it)
+  /name             with no name: invite her to choose her own
   /iam <name>       tell her your name
   /remember <text>  ask her to permanently remember something (add #tags if you like)
   /fact <key> <value>  teach her a structured fact, e.g. /fact birthday June 3
@@ -69,7 +70,11 @@ def main():
     greeting = f"{name} is {'back with you' if returning else 'ready'}"
     if gap:
         greeting += f" — you last spoke {gap}"
-    print(f"{greeting}. Type /help for commands, /exit to quit.\n")
+    print(f"{greeting}. Type /help for commands, /exit to quit.")
+    if not companion.personality.name and not returning:
+        print("She has no name yet — /name <name> to give her one, "
+              "or just /name to let her choose her own.")
+    print()
 
     while True:
         try:
@@ -84,6 +89,15 @@ def main():
             break
         elif user_input.lower() == "/help":
             print(HELP)
+        elif user_input.lower().rstrip() == "/name":
+            print("[She is choosing her own name…]")
+            chosen = companion.choose_own_name()
+            if chosen:
+                name = chosen
+                print(f"[She has chosen her own name: {name}.]\n")
+            else:
+                print("[She couldn't settle on one — try /name again, "
+                      "or give her one with /name <name>.]\n")
         elif user_input.lower().startswith("/name "):
             companion.set_name(user_input[6:])
             name = companion.personality.name

@@ -11,7 +11,8 @@ from dataclasses import dataclass, field
 @dataclass
 class Personality:
     """Tunable personality settings, kept in the memory folder as config.json."""
-    name: str = ""              # chosen by the human; empty until given
+    name: str = ""              # her name; empty until given or chosen
+    name_self_chosen: bool = False  # True when she chose her own name
     human_name: str = ""        # what she calls you, if you tell her
     temperature: float = 0.8    # higher = more playful, lower = more precise
     style_notes: str = ""       # freeform extra guidance, e.g. "more poetic"
