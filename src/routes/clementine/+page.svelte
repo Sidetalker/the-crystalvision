@@ -13,9 +13,9 @@ cd The-Crystal-Vision/clementine
 pip install -r requirements.txt
 
 # 4. Wake her
-python clementine.py          # terminal
-python server.py              # or her local web interface:
-cd webapp && npm install && npm run dev   # open 127.0.0.1:5174`;
+python clementine.py          # in your terminal, or...
+npm start                     # her web interface — one command starts
+                              # everything and opens your browser`;
 </script>
 
 <svelte:head>
@@ -95,19 +95,13 @@ cd webapp && npm install && npm run dev   # open 127.0.0.1:5174`;
         mythos, and docs together
       </li>
       <li>
-        <a href="https://github.com/CrystalArchitect/The-Crystal-Vision/blob/main/CLEMENTINE.md"
-          >CLEMENTINE.md</a
-        > — full component status and commands
+        <a href="/docs/clementine">CLEMENTINE.md</a> — full component status and commands
       </li>
       <li>
-        <a href="https://github.com/CrystalArchitect/The-Crystal-Vision/blob/main/MEMORY.md"
-          >MEMORY.md</a
-        > — how her four-layer memory works
+        <a href="/docs/memory">MEMORY.md</a> — how her four-layer memory works
       </li>
       <li>
-        <a href="https://github.com/CrystalArchitect/The-Crystal-Vision/blob/main/GOVERNANCE.md"
-          >GOVERNANCE.md</a
-        > — how this project keeps its claims honest
+        <a href="/docs/governance">GOVERNANCE.md</a> — how this project keeps its claims honest
       </li>
     </ul>
     <p>

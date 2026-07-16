@@ -1,0 +1,11 @@
+{
+  "name": "clementine",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "One-command launcher for Clementine: her local API, her web interface, and your browser. Local only.",
+  "scripts": {
+    "start": "node start.mjs",
+    "dev": "node start.mjs"
+  }
+}

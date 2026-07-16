@@ -24,18 +24,29 @@ python clementine.py
 
 ### Web interface
 
-Two terminals from this folder:
+One command from this folder:
 
 ```bash
-# 1. her brain — the local API
-python server.py
+npm start            # starts her brain + her face, then opens your browser
 ```
 
+It launches the local API (`server.py`), the Svelte web interface
+(installing its dependencies on first run), waits for both to come
+alive, and opens http://127.0.0.1:5174. Ctrl+C stops everything.
+
+Flags after `--` go to the brain:
+
 ```bash
-# 2. her face — the web interface
-cd webapp
-npm install
-npm run dev          # open http://127.0.0.1:5174
+npm start -- --profile Crystal --model qwen2.5:7b
+```
+
+If you have several Pythons, point it at the right one with
+`CLEMENTINE_PYTHON=/path/to/python npm start`. Prefer the manual way?
+The two pieces still run separately:
+
+```bash
+python server.py                          # 1. her brain — the local API
+cd webapp && npm install && npm run dev   # 2. her face — open http://127.0.0.1:5174
 ```
 
 The web interface streams her replies while an operator figure works at
