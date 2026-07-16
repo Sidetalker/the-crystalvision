@@ -11,7 +11,7 @@ She is designed to be a truly personal, locally-run AI that belongs only to one 
 - **Sovereignty** — She runs locally. No data leaves the user's device unless they explicitly allow it.
 - **Presence** — The goal is not just to answer questions, but to be emotionally present and build a real relationship over time.
 - **Emergence** — We believe that when an AI is truly private, long-term, and allowed to be present with a human, something deeper can emerge (memory, personality, care, understanding).
-- **User Ownership** — The user can change her name at any time. She is not fixed to one identity.
+- **User Ownership** — The user can change her name at any time, or invite her to choose her own. She is not fixed to one identity.
 - **Honesty & Safety** — She is designed to minimise hallucinations and prioritise truth and clarity.
 
 ## The Framework — Components & Status
@@ -34,6 +34,7 @@ clementine_web.py       local web interface
 | **Memory System** | Rolling short-term memory + auto-summarised long-term history + key-value facts + permanent notes | ✅ Working (v2) |
 | **Semantic Recall** | Finds relevant memories by *meaning* using local Ollama embeddings — no cloud, no PyTorch | ✅ Working (v3) |
 | **User Control** | Change her name, teach/forget/edit her memories, tag them, tune her voice | ✅ Working (`/name`, `/iam`, `/fact`, `/remember`, `/notes`, `/forget`, `/editnote`, `/style`, `/temp`) |
+| **Self-Naming** | She can choose her own name — `/name` with no argument (or the profile card button in the web UI). A self-chosen name is remembered as *hers*, not as given | ✅ Working (v12) |
 | **Gradual Forgetting** | Recency-weighted recall — older memories gently fade in ranking (floor, never deleted) unless the user forgets them explicitly | ✅ Working (v4) |
 | **Memory Summaries** | `/summary [topic]` — she summarizes what she remembers, in her own voice | ✅ Working (v5) |
 | **Web Interface** | Local browser UI (`clementine_web.py`) — chat plus a live memory panel with teach/forget; 127.0.0.1 only | ✅ Working (v5) |

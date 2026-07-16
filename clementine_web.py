@@ -97,6 +97,7 @@ PAGE = """<!doctype html>
       <button style="margin-top:8px">Save profile</button>
     </form>
     <div style="margin-top:14px">
+      <button class="small" id="choosename" type="button">let her choose her own name</button>
       <button class="small" id="delprofile" type="button">delete another profile…</button>
     </div>
   </aside>
@@ -231,6 +232,21 @@ document.getElementById('reflectbtn').onclick = async () => {
   b.textContent = data.insights;
   refreshMems();
 };
+document.getElementById('choosename').onclick = async () => {
+  const btn = document.getElementById('choosename');
+  btn.disabled = true; btn.textContent = 'she is choosing…';
+  const r = await fetch('/api/profile/meta', {method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({choose_name: true})});
+  const data = await r.json();
+  btn.disabled = false; btn.textContent = 'let her choose her own name';
+  if (data.ok){
+    document.getElementById('hername').textContent = data.name;
+    refreshProfiles();
+  } else {
+    alert(data.error || 'She could not settle on a name — try again.');
+  }
+};
 document.getElementById('delprofile').onclick = async () => {
   const name = prompt('Delete which profile? (cannot be the active one — this erases its memory forever)');
   if (!name) return;
@@ -348,6 +364,13 @@ def create_app(companion: Clementine) -> Flask:
             c.personality.description = str(data["description"]).strip()[:200]
         if "model" in data and str(data["model"]).strip():
             c.set_model(str(data["model"]))
+        if data.get("choose_name"):
+            chosen = c.choose_own_name()
+            if not chosen:
+                return jsonify({"ok": False,
+                                "error": "she couldn't settle on a name — try again"})
+            c.save()
+            return jsonify({"ok": True, "name": chosen})
         c.save()
         return jsonify({"ok": True})
 
