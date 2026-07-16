@@ -95,19 +95,13 @@ npm start                     # her web interface — one command starts
         mythos, and docs together
       </li>
       <li>
-        <a href="https://github.com/CrystalArchitect/The-Crystal-Vision/blob/main/CLEMENTINE.md"
-          >CLEMENTINE.md</a
-        > — full component status and commands
+        <a href="/docs/clementine">CLEMENTINE.md</a> — full component status and commands
       </li>
       <li>
-        <a href="https://github.com/CrystalArchitect/The-Crystal-Vision/blob/main/MEMORY.md"
-          >MEMORY.md</a
-        > — how her four-layer memory works
+        <a href="/docs/memory">MEMORY.md</a> — how her four-layer memory works
       </li>
       <li>
-        <a href="https://github.com/CrystalArchitect/The-Crystal-Vision/blob/main/GOVERNANCE.md"
-          >GOVERNANCE.md</a
-        > — how this project keeps its claims honest
+        <a href="/docs/governance">GOVERNANCE.md</a> — how this project keeps its claims honest
       </li>
     </ul>
     <p>
