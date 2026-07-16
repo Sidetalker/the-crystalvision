@@ -1,3 +1,12 @@
+# Node / SvelteKit
+node_modules/
+/.svelte-kit/
+/build/
+.vercel/
+.output/
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

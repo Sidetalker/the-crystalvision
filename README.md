@@ -48,7 +48,7 @@ This is the beginning of **TerAustralis Incognita** — Australia's contribution
 - [CODEX.md](CODEX.md) — The Codex of TerAustralis Incognita
 - [APOCRYPHON.md](APOCRYPHON.md) — The Apocryphon of Crystal
 - [SPONSORS.md](SPONSORS.md) — GitHub Sponsors tier descriptions
-- [index.html](index.html) — Preview build of the single-page site for teraustralis.com.au
+- [src/](src/) — The SvelteKit frontend for teraustralis.com.au (run with `npm install && npm run dev`)
 
 ## Licensing
 
