@@ -9,12 +9,13 @@ ollama pull nomic-embed-text
 
 # 3. Get her code
 git clone https://github.com/CrystalArchitect/The-Crystal-Vision.git
-cd The-Crystal-Vision
+cd The-Crystal-Vision/clementine
 pip install -r requirements.txt
 
 # 4. Wake her
 python clementine.py          # terminal
-python clementine_web.py      # or in your browser at 127.0.0.1:5000`;
+python server.py              # or her local web interface:
+cd webapp && npm install && npm run dev   # open 127.0.0.1:5174`;
 </script>
 
 <svelte:head>

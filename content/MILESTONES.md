@@ -49,7 +49,7 @@
 | 11 | Command System | Clean command interface (teach, forget, remember, summary…) · Commands feel natural | ✅ |
 | 12 | Interface Improvements | Simple terminal UI or basic web interface · Improve readability · Basic conversation logging | ✅ * |
 
-\* Local web interface shipped (`clementine_web.py`, 127.0.0.1 only); conversation logging is inherent (memory persists locally). Weeks 9–10 shipped in v11 (Presence): rewritten personality core — feeling under the words, one gentle question, presence before solutions, honest limits — plus time awareness (she knows the present moment and how long since you last spoke). *Personality consistency over long real conversations remains the steward's to test — only real talks can.*
+\* Local web interface shipped (`clementine/server.py` + `clementine/webapp/`, 127.0.0.1 only); conversation logging is inherent (memory persists locally). Weeks 9–10 shipped in v11 (Presence): rewritten personality core — feeling under the words, one gentle question, presence before solutions, honest limits — plus time awareness (she knows the present moment and how long since you last spoke). *Personality consistency over long real conversations remains the steward's to test — only real talks can.*
 
 **End of Month 3 goal:** Clementine feels like a distinct personality with emotional presence, not just a tool. — **✅ Built; awaiting the steward's living test.**
 
