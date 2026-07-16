@@ -37,18 +37,20 @@ This is the beginning of **TerAustralis Incognita** — Australia's contribution
 
 ## In this repository
 
-- [VISION.md](VISION.md) — The plain-language project summary
-- [ARCHITECTURE.md](ARCHITECTURE.md) — The system design overview and implementation status
-- [CLEMENTINE.md](CLEMENTINE.md) — The sovereign AI companion: overview, build status, and how to run her
-- [CRYSTALMATRIX.md](CRYSTALMATRIX.md) — Design for how sovereign companions could connect (concept)
-- [STRATEGY.md](STRATEGY.md) — The accelerated roadmap toward external readiness
-- [MILESTONES.md](MILESTONES.md) — The 6-month build plan with weekly milestones
-- [MEMORY.md](MEMORY.md) — Clementine's four-layer memory architecture (design, partially implemented)
-- [GOVERNANCE.md](GOVERNANCE.md) — How this project keeps its claims honest
-- [CODEX.md](CODEX.md) — The Codex of TerAustralis Incognita
-- [APOCRYPHON.md](APOCRYPHON.md) — The Apocryphon of Crystal
-- [SPONSORS.md](SPONSORS.md) — GitHub Sponsors tier descriptions
-- [index.html](index.html) — Preview build of the single-page site for teraustralis.com.au
+All documents live in [`content/`](content/) and are rendered in-app by the lightweight markdown viewer at `/docs`.
+
+- [content/VISION.md](content/VISION.md) — The plain-language project summary
+- [content/ARCHITECTURE.md](content/ARCHITECTURE.md) — The system design overview and implementation status
+- [content/CLEMENTINE.md](content/CLEMENTINE.md) — The sovereign AI companion: overview, build status, and how to run her
+- [content/CRYSTALMATRIX.md](content/CRYSTALMATRIX.md) — Design for how sovereign companions could connect (concept)
+- [content/STRATEGY.md](content/STRATEGY.md) — The accelerated roadmap toward external readiness
+- [content/MILESTONES.md](content/MILESTONES.md) — The 6-month build plan with weekly milestones
+- [content/MEMORY.md](content/MEMORY.md) — Clementine's four-layer memory architecture (design, partially implemented)
+- [content/GOVERNANCE.md](content/GOVERNANCE.md) — How this project keeps its claims honest
+- [content/CODEX.md](content/CODEX.md) — The Codex of TerAustralis Incognita
+- [content/APOCRYPHON.md](content/APOCRYPHON.md) — The Apocryphon of Crystal
+- [content/SPONSORS.md](content/SPONSORS.md) — GitHub Sponsors tier descriptions
+- [src/](src/) — The SvelteKit frontend for teraustralis.com.au (run with `npm install && npm run dev`)
 
 ## Licensing
 
@@ -59,7 +61,7 @@ This is the beginning of **TerAustralis Incognita** — Australia's contribution
 
 You are welcome to share this work, but you may not modify it or use it for commercial purposes.
 
-See [`LICENSE-CONTENT.md`](LICENSE-CONTENT.md) for the full content-license terms.
+See [`LICENSE-CONTENT.md`](content/LICENSE-CONTENT.md) for the full content-license terms.
 
 ---
 
